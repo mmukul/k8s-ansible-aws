@@ -1,5 +1,6 @@
 # Provisioning a Kubernetes Cluster on AWS using Ansible
 
+## Setup
 
 - AWS VPC
 - 3 EC2 instances for HA Kubernetes Control Plane: Kubernetes API, Scheduler and Controller Manager
@@ -14,14 +15,12 @@
 
 Requirements on control machine:
 
-- Terraform (tested with Terraform 0.7.0; **NOT compatible with Terraform 0.6.x**)
 - Python (tested with Python 2.7.12, may be not compatible with older versions; requires Jinja2 2.8)
 - Python *netaddr* module
 - Ansible (tested with Ansible 2.1.0.0)
 - *cfssl* and *cfssljson*:  https://github.com/cloudflare/cfssl
 - Kubernetes CLI
 - SSH Agent
-- (optionally) AWS CLI
 
 
 ## AWS Credentials
@@ -30,26 +29,24 @@ Requirements on control machine:
 
 You need a valid AWS Identity (`.pem`) file and the corresponding Public Key. Terraform imports the [KeyPair](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html) in your AWS account. Ansible uses the Identity to SSH into machines.
 
-Please read [AWS Documentation](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#how-to-generate-your-own-key-and-import-it-to-aws) about supported formats.
 
-### Terraform and Ansible authentication
+### Ansible authentication
 
-Both Terraform and Ansible expect AWS credentials set in environment variables:
+Ansible expect AWS credentials set in environment variables:
+
 ```
 $ export AWS_ACCESS_KEY_ID=<access-key-id>
 $ export AWS_SECRET_ACCESS_KEY="<secret-key>"
 ```
 
-If you plan to use AWS CLI you have to set `AWS_DEFAULT_REGION`.
 
 Ansible expects the SSH identity loaded by SSH agent:
+
 ```
 $ ssh-add <keypair-name>.pem
 ```
 
 ## Defining the environment
-
-Terraform expects some variables to define your working environment:
 
 - `control_cidr`: The CIDR of your IP. All instances will accept only traffic from this address only. Note this is a CIDR, not a single IP. e.g. `123.45.67.89/32` (mandatory)
 - `default_keypair_public_key`: Valid public key corresponding to the Identity you will use to SSH into VMs. e.g. `"ssh-rsa AAA....xyz"` (mandatory)
