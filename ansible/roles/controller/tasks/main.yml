@@ -4,7 +4,9 @@
 ####################
 
 - name: Create kubernetes data dir
-  file: path=/var/lib/kubernetes state=directory
+  file:
+    path: /var/lib/kubernetes
+    state: directory
   become: true
 
 - name: Copy certificates
@@ -32,7 +34,6 @@
     owner: root
     group: root
     mode: 0755
-    # TODO Add hash check
   with_items:
     - kube-apiserver
     - kube-controller-manager
