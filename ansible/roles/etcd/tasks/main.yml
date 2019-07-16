@@ -1,7 +1,9 @@
 ---
 
 - name: Create etcd config dir
-  file: path=/etc/etcd state=directory
+  file: 
+    path: /etc/etcd
+    state: directory
   become: true
 
 - name: Copy certificates
@@ -21,7 +23,6 @@
   get_url:
     url: "{{ etcd_download_url }}"
     dest: "/usr/local/src"
-    # TODO Add hash check
   become: true
 
 - name: Unpack etcd binaries
@@ -46,7 +47,9 @@
   become: true
 
 - name: Create etcd data dir
-  file: path=/var/lib/etcd state=directory
+  file:
+    path: /var/lib/etcd
+    state: directory
   become: true
 
 - name: Add etcd systemd unit
@@ -72,7 +75,9 @@
   become: true
 
 - name: Wait for etcd listening
-  wait_for: port=2379 timeout=60
+  wait_for:
+    port: 2379
+    timeout: 60
 
 - name: Verify etcd cluster health
   shell: etcdctl --ca-file=/etc/etcd/ca.pem cluster-health
